@@ -53,7 +53,7 @@
   </style>
   
   <div>
-    <button style="font-size: 25px; width: 170%; height: 200%; margin: auto;" id="sale-mint" class="opensea-button w-button">Mint 1 Dino</button>  
+    <button style="font-size: 25px; width: 170%; height: 200%; margin: auto;" id="presale-mint" class="opensea-button w-button">Mint 1 Dino</button>  
   </div>
   
   <div class="slidecontainer" style="padding-top: 35%; margin: auto;">
@@ -62,7 +62,7 @@
 </div>
 </div>
   <script type="text/javascript">
-      document.getElementById('sale-mint').onclick = async function() {
+      document.getElementById('presale-mint').onclick = async function() {
         if (window.ethereum) {
           await window.ethereum.send('eth_requestAccounts');
           window.web3 = new Web3(window.ethereum);
@@ -1027,10 +1027,10 @@
 
       document.getElementById('dinoSlider').oninput = function(){
         if (this.value == 1){
-          document.getElementById('sale-mint').innerHTML = "Mint " + String(this.value) + " Dino";
+          document.getElementById('presale-mint').innerHTML = "Mint " + String(this.value) + " Dino";
         }
         else {
-          document.getElementById('sale-mint').innerHTML = "Mint " + String(this.value) + " Dinos";
+          document.getElementById('presale-mint').innerHTML = "Mint " + String(this.value) + " Dinos";
         }
       };
 
