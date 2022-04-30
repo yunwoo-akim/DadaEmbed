@@ -1,0 +1,1089 @@
+<style>
+    .slidecontainer {
+      width: 100%;
+    }
+    
+    .slider {
+      -webkit-appearance: none;
+      width: 170%;
+      height: 50px;
+      background: #d3d3d3;
+      outline: none;
+      opacity: 0.7;
+      -webkit-transition: .2s;
+      transition: opacity .2s;
+    }
+    
+    .slider:hover {
+      opacity: 1;
+    }
+    
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 50px;
+      height: 50px;
+      background: #3c81b8;
+      cursor: pointer;
+    }
+    
+    .slider::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      background: #04AA6D;
+      cursor: pointer;
+    }
+  </style>
+  <div class="container">
+  <div>
+    <p><input id="presale-signature" type=text placeholder="Enter presale signature: " style="width: 170%; height: 50px;"></p>
+  <div style="height: 20px;">
+
+  </div>
+  </div>
+  <div class="container">
+  <style>
+    .container{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+    }
+  </style>
+  
+  <div>
+    <button style="font-size: 25px; width: 170%; height: 200%; margin: auto;" id="sale-mint" class="opensea-button w-button">Mint 1 Dino</button>  
+  </div>
+  
+  <div class="slidecontainer" style="padding-top: 35%; margin: auto;">
+    <input type="range" min="1" max="5" value="1" class="slider" id="dinoSlider">
+  </div>
+</div>
+</div>
+  <script type="text/javascript">
+      document.getElementById('sale-mint').onclick = async function() {
+        if (window.ethereum) {
+          await window.ethereum.send('eth_requestAccounts');
+          window.web3 = new Web3(window.ethereum);
+          const CONTRACT_ADDRESS = '0x3F4BC79f9e4309AD86d166F655AA221B419F9787';
+          const ABI = [
+{
+"inputs": [
+    {
+        "internalType": "string",
+        "name": "_initBaseURI",
+        "type": "string"
+    },
+    {
+        "internalType": "string",
+        "name": "_initNotRevealedUri",
+        "type": "string"
+    }
+],
+"stateMutability": "nonpayable",
+"type": "constructor"
+},
+{
+"anonymous": false,
+"inputs": [
+    {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+    },
+    {
+        "indexed": true,
+        "internalType": "address",
+        "name": "approved",
+        "type": "address"
+    },
+    {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+    }
+],
+"name": "Approval",
+"type": "event"
+},
+{
+"anonymous": false,
+"inputs": [
+    {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+    },
+    {
+        "indexed": true,
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+    },
+    {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "approved",
+        "type": "bool"
+    }
+],
+"name": "ApprovalForAll",
+"type": "event"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+    },
+    {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+    }
+],
+"name": "approve",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"anonymous": false,
+"inputs": [
+    {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_baseURI",
+        "type": "string"
+    }
+],
+"name": "ChangeBaseURI",
+"type": "event"
+},
+{
+"anonymous": false,
+"inputs": [
+    {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "_isBurnEnabled",
+        "type": "bool"
+    }
+],
+"name": "ChangeIsBurnEnabled",
+"type": "event"
+},
+{
+"inputs": [
+    {
+        "internalType": "uint256",
+        "name": "_numMint",
+        "type": "uint256"
+    },
+    {
+        "internalType": "address",
+        "name": "_giftee",
+        "type": "address"
+    }
+],
+"name": "gift",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"anonymous": false,
+"inputs": [
+    {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+    },
+    {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+    }
+],
+"name": "GiftMint",
+"type": "event"
+},
+{
+"anonymous": false,
+"inputs": [
+    {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+    },
+    {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+    }
+],
+"name": "OwnershipTransferred",
+"type": "event"
+},
+{
+"inputs": [
+    {
+        "internalType": "bytes",
+        "name": "_signature",
+        "type": "bytes"
+    },
+    {
+        "internalType": "uint256",
+        "name": "_numMint",
+        "type": "uint256"
+    }
+],
+"name": "presaleMint",
+"outputs": [],
+"stateMutability": "payable",
+"type": "function"
+},
+{
+"anonymous": false,
+"inputs": [
+    {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_minter",
+        "type": "address"
+    },
+    {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+    },
+    {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256"
+    }
+],
+"name": "PresaleMint",
+"type": "event"
+},
+{
+"inputs": [
+    {
+        "internalType": "uint256",
+        "name": "_numMint",
+        "type": "uint256"
+    }
+],
+"name": "publicSaleMint",
+"outputs": [],
+"stateMutability": "payable",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "renounceOwnership",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "reveal",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+    },
+    {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+    }
+],
+"name": "safeTransferFrom",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+    },
+    {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+    },
+    {
+        "internalType": "bytes",
+        "name": "_data",
+        "type": "bytes"
+    }
+],
+"name": "safeTransferFrom",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"anonymous": false,
+"inputs": [
+    {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_minter",
+        "type": "address"
+    },
+    {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+    },
+    {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256"
+    }
+],
+"name": "SaleMint",
+"type": "event"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+    },
+    {
+        "internalType": "bool",
+        "name": "approved",
+        "type": "bool"
+    }
+],
+"name": "setApprovalForAll",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "string",
+        "name": "_newBaseURI",
+        "type": "string"
+    }
+],
+"name": "setBaseURI",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "string",
+        "name": "_notRevealedURI",
+        "type": "string"
+    }
+],
+"name": "setNotRevealedURI",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "_newAddress",
+        "type": "address"
+    }
+],
+"name": "setSignerAddress",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "setUpPresale",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "setUpSale",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"anonymous": false,
+"inputs": [
+    {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+    },
+    {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+    },
+    {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+    }
+],
+"name": "Transfer",
+"type": "event"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+    },
+    {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+    }
+],
+"name": "transferFrom",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+    }
+],
+"name": "transferOwnership",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "withdraw",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"anonymous": false,
+"inputs": [
+    {
+        "indexed": false,
+        "internalType": "enum DadaDinos.WorkflowStatus",
+        "name": "previousStatus",
+        "type": "uint8"
+    },
+    {
+        "indexed": false,
+        "internalType": "enum DadaDinos.WorkflowStatus",
+        "name": "newStatus",
+        "type": "uint8"
+    }
+],
+"name": "WorkflowStatusChange",
+"type": "event"
+},
+{
+"inputs": [],
+"name": "allowedGiftLimit",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+    }
+],
+"name": "balanceOf",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "baseExtension",
+"outputs": [
+    {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "baseURI",
+"outputs": [
+    {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+    }
+],
+"name": "getApproved",
+"outputs": [
+    {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+    }
+],
+"name": "getMessageHash",
+"outputs": [
+    {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+    }
+],
+"stateMutability": "pure",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "getPrice",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "getSaleStatus",
+"outputs": [
+    {
+        "internalType": "enum DadaDinos.WorkflowStatus",
+        "name": "",
+        "type": "uint8"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+    }
+],
+"name": "getVRSFromSignature",
+"outputs": [
+    {
+        "internalType": "uint8",
+        "name": "v",
+        "type": "uint8"
+    },
+    {
+        "internalType": "bytes32",
+        "name": "r",
+        "type": "bytes32"
+    },
+    {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+    }
+],
+"stateMutability": "pure",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "GIFT_LIMIT",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "giftCount",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+    }
+],
+"name": "isApprovedForAll",
+"outputs": [
+    {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "MAX_PRESALE_MINT",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "MAX_SELF_MINT",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "MAX_SUPPLY",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "name",
+"outputs": [
+    {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "notRevealedUri",
+"outputs": [
+    {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "owner",
+"outputs": [
+    {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+    }
+],
+"name": "ownerOf",
+"outputs": [
+    {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "PRESALE_MINTRATE",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "privateSalePrice",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "publicSaleLimit",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "revealed",
+"outputs": [
+    {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "SALE_MINTRATE",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+    }
+],
+"name": "supportsInterface",
+"outputs": [
+    {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "symbol",
+"outputs": [
+    {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+    }
+],
+"name": "tokenByIndex",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+    },
+    {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+    }
+],
+"name": "tokenOfOwnerByIndex",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+    }
+],
+"name": "tokensPerWallet",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+    }
+],
+"name": "tokenURI",
+"outputs": [
+    {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "totalSupply",
+"outputs": [
+    {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [
+    {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+    },
+    {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+    }
+],
+"name": "verifySignature",
+"outputs": [
+    {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+},
+{
+"inputs": [],
+"name": "workflow",
+"outputs": [
+    {
+        "internalType": "enum DadaDinos.WorkflowStatus",
+        "name": "",
+        "type": "uint8"
+    }
+],
+"stateMutability": "view",
+"type": "function"
+}
+];
+          var accounts = await web3.eth.getAccounts();
+          account = accounts[0];
+          contract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS);
+          
+          signature = document.getElementById('presale-signature').value;
+          let numDinos = document.getElementById('dinoSlider').value;
+          let price = await contract.methods.getPrice().call();
+          let totalPrice = price * numDinos;
+          await contract.methods.presaleMint(signature, numDinos).send({ from: account, value: totalPrice.toString() });
+        }
+      };
+
+      document.getElementById('dinoSlider').oninput = function(){
+        if (this.value == 1){
+          document.getElementById('sale-mint').innerHTML = "Mint " + String(this.value) + " Dino";
+        }
+        else {
+          document.getElementById('sale-mint').innerHTML = "Mint " + String(this.value) + " Dinos";
+        }
+      };
+
+  </script>
